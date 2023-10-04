@@ -12,8 +12,8 @@ import java.io.IOException;
 
 public class Hero {
     private Position position;
-    public Hero(Position position) {
-        this.position = position;
+    public Hero(int x, int y) {
+        this.position = new Position(x,y);
     }
     public void setPosition(Position position){
         this.position = position;
