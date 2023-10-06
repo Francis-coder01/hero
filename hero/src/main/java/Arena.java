@@ -10,7 +10,9 @@ import com.googlecode.lanterna.terminal.Terminal;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 
 public class Arena {
@@ -18,11 +20,13 @@ public class Arena {
     private int height;
     private Hero hero;
     private List<Wall> walls;
+    private List<Coin> coins;
     public Arena(int width, int height){
         this.width = width;
         this.height = height;
         hero = new Hero(10,10);
         this.walls = createWalls();
+        this.coins = createCoins();
     }
     private List<Wall> createWalls() {
         List<Wall> walls = new ArrayList<>();
@@ -35,6 +39,25 @@ public class Arena {
             walls.add(new Wall(width - 1, r));
         }
         return walls;
+    }
+    private List<Coin> createCoins() {
+        Random random = new Random();
+        ArrayList<Coin> coins = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            while(true) {
+                Position coinPosition = new Position(random.nextInt(width - 2) + 1,
+                        random.nextInt(height - 2) + 1);
+                if (coinPosition.equals(hero.getPosition())) continue;
+                boolean flag = false;
+                for (Wall wall : walls){
+                    if (coinPosition.equals(wall.getPosition())) {flag = true; break;}
+                }
+                if (flag) continue;
+                coins.add(new Coin(coinPosition.getX(), coinPosition.getY()));
+                break;
+            }
+        }
+        return coins;
     }
 
     public void processKey(KeyStroke key) {
@@ -56,14 +79,32 @@ public class Arena {
     public void moveHero(Position position) {
         if (canHeroMove(position))
             hero.setPosition(position);
+        for(Coin coin : coins) {
+            if (position.equals(coin.getPosition())) retrieveCoins(position);
+            }
         }
     public boolean canHeroMove(Position position){
+        for(Wall w : walls){
+            if(w.getPosition().equals(position))
+                return false;
+        }
         return (position.getX() >= 0 && position.getX() < width
                 && position.getY() >= 0 && position.getY() < height);
     }
-    public void draw(TextGraphics screen){
-        hero.draw(screen);
+    private void retrieveCoins(Position position){
+        for (Iterator<Coin> it = coins.iterator(); it.hasNext();){
+            Coin coin = it.next();
+            if(coin.getPosition().equals(position)) {
+                it.remove();
+                break;
+            }
+        }
+    }
+    public void draw(TextGraphics graphics){
+        hero.draw(graphics);
         for (Wall wall : walls)
-            wall.draw(screen);
+            wall.draw(graphics);
+        for (Coin coin : coins)
+            coin.draw(graphics);
     }
 }

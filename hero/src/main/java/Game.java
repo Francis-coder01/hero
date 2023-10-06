@@ -40,7 +40,7 @@ public class Game {
     private void draw() throws IOException {
         screen.clear();
         TextGraphics graphics = screen.newTextGraphics();
-        graphics.setBackgroundColor(TextColor.Factory.fromString("#366666"));
+        graphics.setBackgroundColor(TextColor.Factory.fromString("#000000"));
         graphics.fillRectangle(new TerminalPosition(0, 0), new
                 TerminalSize(40, 20), ' ');
         arena.draw(graphics);
@@ -51,7 +51,7 @@ public class Game {
         while(true) {
             draw();
             KeyStroke key = screen.readInput();
-            if(key.getKeyType() == KeyType.Character && key.getCharacter() == 'q') {
+            if(key.getKeyType() == KeyType.Character && Character.toLowerCase(key.getCharacter()) == 'q') {
                 screen.close();
                 break;
             }
