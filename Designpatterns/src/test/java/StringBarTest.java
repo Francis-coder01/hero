@@ -1,5 +1,3 @@
-import org.example.Bar;
-import org.example.StringBar;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
